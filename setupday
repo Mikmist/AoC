@@ -1,0 +1,22 @@
+re='^[0-9]+$'
+if ! [[ $1 =~ $re ]] ; then
+   echo "error: First argument not a number or none given. (give the first day)" >&2; exit 1
+fi
+mkdir $1
+mkdir $1/input
+touch $1/input/input
+
+cookie=$(cat cookie)
+#curl https://adventofcode.com/2019/day/$1/input --cookie "session=$cookie" > $1/input/input
+
+cd $1/
+
+# Setting up Rust env using Cargo
+echo "Setting up rust env"
+output=$(cargo new rust)
+
+# Setting up PHP env
+echo "Setting up php env"
+mkdir php
+touch php/$1.php
+chmod +x php/$1.php
