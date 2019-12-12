@@ -26,7 +26,7 @@ function init {
       echo "Attempting init."
       mkdir $1
       touch $1/.init
-      cat "####init_done####" > $1/.init
+      echo "####init_done####" > $1/.init
       mkdir $1/input
       touch $1/input/input
 
@@ -57,8 +57,10 @@ function setRust {
    echo "Setting up rust env"
    output=$(cargo new rust)
    cp ../scripts/submit ./rust/submit
+   touch ./rust/.gitignore
+   echo "target/" > ./rust/.gitignore
    sed -i -e "s|replace_day|$1|g" rust/submit
-   sed -i -e "s|replace_cookie|$1|g" rust/submit
+   sed -i -e "s|replace_cookie|$cookiedir|g" rust/submit
 }
 
 # Setting up PHP env
