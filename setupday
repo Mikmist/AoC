@@ -1,22 +1,160 @@
-re='^[0-9]+$'
-if ! [[ $1 =~ $re ]] ; then
-   echo "error: First argument not a number or none given. (give the first day)" >&2; exit 1
-fi
-mkdir $1
-mkdir $1/input
-touch $1/input/input
+init=0
+rust=0
+php=0
+dir=$(pwd)
+cookiedir="$dir/cookie.txt"
 
-cookie=$(cat cookie)
-#curl https://adventofcode.com/2019/day/$1/input --cookie "session=$cookie" > $1/input/input
+function checkInitStatus {
+   if [ -d $1 ]; then
+      if [ -f "$1/.init" ]; then
+		 echo 1
+      else 
+	     echo 2
+	  fi
+   else
+      if [ -f $1 ]; then
+         echo -1
+      else
+         echo 0
+      fi
+   fi
+}
 
-cd $1/
+function init {
+   status=$(checkInitStatus $1)
+   if [ $status -eq 0 ]; then
+      echo "Attempting init."
+      mkdir $1
+      touch $1/.init
+      cat "####init_done####" > $1/.init
+      mkdir $1/input
+      touch $1/input/input
+
+      cookie=$(cat cookie.txt)
+      curl https://adventofcode.com/2019/day/$1/input --cookie "session=$cookie" > $1/input/input
+
+      signin="differ"
+      if [[ $response =~ $signin ]]; then
+        echo "Bad cookie."
+        rm -rf $1
+      fi
+   elif [ $status -eq 1 ]; then
+      echo "Has already been initialized."
+   elif [ $status -eq -1 ]; then
+      echo "$1 is a file, delete it if you want to use it as a AoC day."
+	  rust=0
+	  php=0
+   elif [ $status -eq 2 ]; then
+      echo "Was not initialized by this program, stopping."
+	  rust=0
+	  php=0
+   fi
+}
 
 # Setting up Rust env using Cargo
-echo "Setting up rust env"
-output=$(cargo new rust)
+function setRust {
+   cd $1/
+   echo "Setting up rust env"
+   output=$(cargo new rust)
+   cp ../scripts/submit ./rust/submit
+   sed -i -e "s|replace_day|$1|g" rust/submit
+   sed -i -e "s|replace_cookie|$1|g" rust/submit
+}
 
 # Setting up PHP env
-echo "Setting up php env"
-mkdir php
-touch php/$1.php
-chmod +x php/$1.php
+function setPHP {
+   echo "Setting up php env"
+   mkdir php
+   touch php/$1.php
+   cp ../scripts/submit ./php/submit
+   sed -i -e "s|replace_day|$1|g" ./php/submit
+   sed -i -e "s|replace_cookie|$cookiedir|g" ./php/submit
+   echo "require __DIR__ . submit.php;" > ./php/$1.php
+   chmod +x php/$1.php
+}
+
+while test $# -gt 0; do
+  case "$1" in
+    -h|--help)
+      echo "NAME     - setupday - Attempts to set up AoC day"
+      echo " "
+      echo "SYNOPSIS - setupday [options] day"
+      echo "           Day needs to be a number"
+      echo "  "
+      echo "options:"
+      echo " -h, --help                Show brief help"
+      echo " -i, --init                Attempts the initialization"
+      echo " -p, --php                 The php language will be set up"
+      echo " -r, --rust                The rust language will be set up"
+      exit 0
+      ;;
+    -i)
+      init=1
+	  shift
+      ;;
+    --init)
+      init=1
+	  shift
+      ;;
+    -p)
+      php=1
+	  shift
+      ;;
+    --php)
+      php=1
+	  shift
+      ;;
+    -r)
+      rust=1
+	  shift
+      ;;
+    --rust)
+      rust=1
+	  shift
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+continue=$(checkInitStatus $1)
+if [ $init -eq 1 ]; then
+   if [ ! -f "cookie.txt" ]; then
+      touch cookie.txt
+      echo "No cookie found, creating.."
+      echo "Enter your advent of code cookie value in the file 'cookie.txt'"
+      exit 0
+   fi
+   
+   re='^[0-9]+$'
+   
+
+   if ! [[ -n $1 ]] ; then
+      echo "No day given." >&2; exit 1
+   fi
+   if ! [[ $1 =~ $re ]] ; then
+      echo "error: The day given was not a number. See -h or --help for more." >&2; exit 1
+   fi
+   
+   init $1
+elif [ $continue -ne 1 ]; then
+   echo "This day has not yet been initialized, use -i or see -h or --help for more."
+   exit 1
+fi
+
+if [ $rust -eq 1 ]; then 
+   if [ -d "$1/rust" ]; then
+      echo "Rust project has already been created."
+   else
+	  setRust $1
+   fi
+fi
+
+if [ $php -eq 1 ]; then 
+   if [ -d "$1/php" ]; then
+      echo "PHP project has already been created."
+   else
+	  setPHP $1
+   fi
+fi
