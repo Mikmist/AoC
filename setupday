@@ -57,10 +57,12 @@ function setRust {
    echo "Setting up rust env"
    output=$(cargo new rust)
    cp ../scripts/submit ./rust/submit
+   cp ../scripts/rust.rs ./rust/src/rust.rc
    touch ./rust/.gitignore
    echo "target/" > ./rust/.gitignore
    sed -i -e "s|replace_day|$1|g" rust/submit
    sed -i -e "s|replace_cookie|$cookiedir|g" rust/submit
+   cd ..
 }
 
 # Setting up PHP env
