@@ -1,3 +1,9 @@
+# Colours
+WARNING="\e[33m"
+SUCCESS="\e[32m"
+ERROR="\e[31m"
+DEFAULT="\e[39m"
+
 init=0
 rust=0
 php=0
@@ -23,7 +29,7 @@ function checkInitStatus {
 function init {
    status=$(checkInitStatus $1)
    if [ $status -eq 0 ]; then
-      echo "Attempting init."
+      printf "[info]    Attempting init..."
       mkdir $1
       touch $1/.init
       echo "####init_done####" > $1/.init
@@ -31,21 +37,25 @@ function init {
       touch $1/input/input
 
       cookie=$(cat cookie.txt)
-      curl https://adventofcode.com/2019/day/$1/input --cookie "session=$cookie" > $1/input/input
+      response=$(curl -s https://adventofcode.com/2019/day/$1/input --cookie "session=$cookie")
 
       signin="differ"
       if [[ $response =~ $signin ]]; then
-        echo "Bad cookie."
-        rm -rf $1
+         printf "$ERROR fail$DEFAULT\n"
+         printf "$ERROR[error]  $DEFAULT Bad cookie, aborting.\n"
+         rm -rf $1
+         return
       fi
+      echo $response > $1/input/input
+      printf "$SUCCESS done$DEFAULT\n"
    elif [ $status -eq 1 ]; then
-      echo "Has already been initialized."
+      printf "$WARNING[warning]$DEFAULT Has already been initialized.\n"
    elif [ $status -eq -1 ]; then
-      echo "$1 is a file, delete it if you want to use it as a AoC day."
+      printf "$ERROR[error]  $DEFAULT $1 is a file, delete it if you want to use it as a AoC day.\n"
 	  rust=0
 	  php=0
    elif [ $status -eq 2 ]; then
-      echo "Was not initialized by this program, stopping."
+      printf "$ERROR[error]  $DEFAULT Was not initialized by this program, stopping.\n"
 	  rust=0
 	  php=0
    fi
@@ -53,21 +63,23 @@ function init {
 
 # Setting up Rust env using Cargo
 function setRust {
+   printf "[info]    Setting up rust env..."
    cd $1/
-   echo "Setting up rust env"
-   output=$(cargo new rust)
+   output=$(cargo new rust -q)
    cp ../scripts/submit ./rust/submit
-   cp ../scripts/rust.rs ./rust/src/rust.rc
+   cp ../scripts/aoc.rs ./rust/src/aoc.rc
    touch ./rust/.gitignore
    echo "target/" > ./rust/.gitignore
    sed -i -e "s|replace_day|$1|g" rust/submit
    sed -i -e "s|replace_cookie|$cookiedir|g" rust/submit
    cd ..
+   printf "$SUCCESS done$DEFAULT\n"
 }
 
 # Setting up PHP env
 function setPHP {
-   echo "Setting up php env"
+   printf "[info]    Setting up php env..."
+   cd $1
    mkdir php
    touch php/$1.php
    cp ../scripts/submit ./php/submit
@@ -75,6 +87,8 @@ function setPHP {
    sed -i -e "s|replace_cookie|$cookiedir|g" ./php/submit
    echo "require __DIR__ . submit.php;" > ./php/$1.php
    chmod +x php/$1.php
+   cd ..
+   printf "$SUCCESS done$DEFAULT\n"
 }
 
 while test $# -gt 0; do
@@ -122,34 +136,33 @@ while test $# -gt 0; do
   esac
 done
 
-continue=$(checkInitStatus $1)
+re='^[0-9]+$'
 if [ $init -eq 1 ]; then
    if [ ! -f "cookie.txt" ]; then
       touch cookie.txt
-      echo "No cookie found, creating.."
-      echo "Enter your advent of code cookie value in the file 'cookie.txt'"
+      printf "[info]    No cookie found, creating..\n"
+      printf "[info]    Enter your advent of code cookie value in the file 'cookie.txt'\n"
       exit 0
-   fi
-   
-   re='^[0-9]+$'
-   
+   fi   
 
    if ! [[ -n $1 ]] ; then
-      echo "No day given." >&2; exit 1
+      printf "$ERROR[error]  $DEFAULT No day given.\n" >&2; exit 1
    fi
    if ! [[ $1 =~ $re ]] ; then
-      echo "error: The day given was not a number. See -h or --help for more." >&2; exit 1
+      printf "$ERROR[error]  $DEFAULT The day given was not a number. See -h or --help for more." >&2; exit 1
    fi
    
    init $1
-elif [ $continue -ne 1 ]; then
-   echo "This day has not yet been initialized, use -i or see -h or --help for more."
+fi
+
+continue=$(checkInitStatus $1)
+if [ $continue -ne 1 ]; then
    exit 1
 fi
 
 if [ $rust -eq 1 ]; then 
    if [ -d "$1/rust" ]; then
-      echo "Rust project has already been created."
+      printf "$WARNING[warning]$DEFAULT Rust project has already been created.\n"
    else
 	  setRust $1
    fi
@@ -157,8 +170,9 @@ fi
 
 if [ $php -eq 1 ]; then 
    if [ -d "$1/php" ]; then
-      echo "PHP project has already been created."
+      printf "$WARNING[warning]$DEFAULT PHP project has already been created.\n"
    else
 	  setPHP $1
    fi
 fi
+
