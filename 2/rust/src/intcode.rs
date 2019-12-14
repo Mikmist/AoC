@@ -1,4 +1,3 @@
-
 #[derive(Clone, PartialEq)]
 enum Operation {
     End,
@@ -39,17 +38,28 @@ impl Computer {
     pub fn run(&mut self) -> Result<Vec<i32>, &'static str> {
         loop {
             let process = self.parse_instruction()?;
-            println!("index: {:?}", self.index);
 
             if process.operation == Operation::End {
                 println!("Finished");
                 break;
             }
+
+            self.execute_instruction(&process);
+
             self.index += process.step_size;
-            println!("index: {:?}", self.index);
         }
 
         Ok(self.output.to_vec())
+    }
+
+    fn execute_instruction(&mut self, process: &Process) {
+        match process.operation {
+            Operation::Mult(a, b, pos) =>
+                self.intcode[pos as usize] = self.intcode[a as usize] * self.intcode[b as usize],
+            Operation::Add(a, b, pos) =>
+                self.intcode[pos as usize] = self.intcode[a as usize] + self.intcode[b as usize],
+            Operation::End => (),
+        }
     }
 
     fn parse_instruction(&mut self) -> Result<Process, &'static str> {
@@ -77,15 +87,11 @@ impl Computer {
             _ => Err("Not a know instruction"),
         }
     }
-
-    pub fn get_intcode_value(&mut self, index: usize) {
-        self.intcode[index];
-    }
 }
 
 #[test]
 fn test_from_intcode() {
-    let mut computer = Computer::with_input(String::from("1,0,0,0,99"), Vec::new());
+    let computer = Computer::with_input(String::from("1,0,0,0,99"), Vec::new());
     assert_eq!(computer.intcode, vec![1,0,0,0,99]);
 }
 
@@ -96,7 +102,22 @@ fn test_run() {
 }
 
 #[test]
-fn test_instruction_1() {
+fn test_instruction_add() {
     let mut computer = Computer::with_input(String::from("1,0,0,0,99"), Vec::new());
     computer.run();
+    assert_eq!(computer.intcode, vec![2,0,0,0,99]);
+}
+
+#[test]
+fn test_instruction_mult() {
+    let mut computer = Computer::with_input(String::from("2,3,0,3,99"), Vec::new());
+    computer.run();
+    assert_eq!(computer.intcode, vec![2,3,0,6,99]);
+}
+
+#[test]
+fn test_instruction_case_1() {
+    let mut computer = Computer::with_input(String::from("1,1,1,4,99,5,6,0,99"), Vec::new());
+    computer.run();
+    assert_eq!(computer.intcode, vec![30,1,1,4,2,5,6,0,99]);
 }

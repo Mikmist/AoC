@@ -6,6 +6,8 @@ fn main() {
 
     for line in lines {
         let mut computer = intcode::Computer::with_input(line, Vec::new());
+        computer.intcode[1] = 12;
+        computer.intcode[2] = 2;
         computer.run().expect("Some error occured.");
         println!("Answer: {:?}", computer.intcode[0]);
     }
