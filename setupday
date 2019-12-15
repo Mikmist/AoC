@@ -14,7 +14,7 @@ function checkInitStatus {
    if [ -d $1 ]; then
       if [ -f "$1/.init" ]; then
 		 echo 1
-      else 
+      else
 	     echo 2
 	  fi
    else
@@ -63,11 +63,15 @@ function init {
 
 # Setting up Rust env using Cargo
 function setRust {
+   read -p "[info]    Is that day an intcode problem? [y/N] " yn
    printf "[info]    Setting up rust env..."
    cd $1/
    output=$(cargo new rust -q)
    cp ../scripts/submit ./rust/submit
    cp ../scripts/aoc.rs ./rust/src/aoc.rs
+   case $yn in
+      [Yy]* ) cp ../scripts/intcode.rs ./rust/src/intcode.rs;;
+   esac
    touch ./rust/.gitignore
    echo "target/" > ./rust/.gitignore
    sed -i -e "s|replace_day|$1|g" rust/submit
@@ -143,7 +147,7 @@ if [ $init -eq 1 ]; then
       printf "[info]    No cookie found, creating..\n"
       printf "[info]    Enter your advent of code cookie value in the file 'cookie.txt'\n"
       exit 0
-   fi   
+   fi
 
    if ! [[ -n $1 ]] ; then
       printf "$ERROR[error]  $DEFAULT No day given.\n" >&2; exit 1
@@ -151,7 +155,7 @@ if [ $init -eq 1 ]; then
    if ! [[ $1 =~ $re ]] ; then
       printf "$ERROR[error]  $DEFAULT The day given was not a number. See -h or --help for more." >&2; exit 1
    fi
-   
+
    init $1
 fi
 
@@ -160,7 +164,7 @@ if [ $continue -ne 1 ]; then
    exit 1
 fi
 
-if [ $rust -eq 1 ]; then 
+if [ $rust -eq 1 ]; then
    if [ -d "$1/rust" ]; then
       printf "$WARNING[warning]$DEFAULT Rust project has already been created.\n"
    else
@@ -168,11 +172,10 @@ if [ $rust -eq 1 ]; then
    fi
 fi
 
-if [ $php -eq 1 ]; then 
+if [ $php -eq 1 ]; then
    if [ -d "$1/php" ]; then
       printf "$WARNING[warning]$DEFAULT PHP project has already been created.\n"
    else
 	  setPHP $1
    fi
 fi
-
