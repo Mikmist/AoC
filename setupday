@@ -9,6 +9,7 @@ rust=0
 php=0
 dir=$(pwd)
 cookiedir="$dir/cookie.txt"
+cookiedir="./../../cookie.txt"
 
 function checkInitStatus {
    if [ -d $1 ]; then

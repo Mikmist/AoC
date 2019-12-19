@@ -1,6 +1,6 @@
-cookie=$(cat /home/zino.holwerda/Documents/AoC/cookie.txt)
+cookie=$(cat ~/Documents/AoC/cookie.txt)
 day="2"
-response=$(curl -d "level=$1&answer=$2" -X POST https://adventofcode.com/2019/day/$day/answer --cookie "session=$cookie" -s)
+#response=$(curl -d "level=$1&answer=$2" -X POST https://adventofcode.com/2019/day/$day/answer --cookie "session=$cookie" -s)
 
 signin="Error"
 # This means the cookie was either not any good.

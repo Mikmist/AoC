@@ -1,6 +1,5 @@
 use std::{
     process::Command,
-    process::Output,
     fs::File,
     io::{prelude::*, BufReader},
 };
@@ -14,17 +13,24 @@ pub fn get_input_lines(name: String) -> Vec<String> {
         .collect()
 }
 
-pub fn submit() -> Output {
-    if cfg!(target_os = "windows") {
-        Command::new("cmd")
-                .args(&["/C", "echo hello"])
-                .output()
-                .expect("failed to execute process")
+pub fn submit(part: i32, answer: i64) {
+    let submit = Command::new("bash")
+            .arg("-c")
+            .arg(format!("./submit {} {}", part, answer))
+            .output()
+            .expect("failed to execute process")
+            .stdout;
+
+    if (submit.len() < 1) {
+        println!("No output");
     } else {
-        Command::new("bash")
-                .arg("-c")
-                .arg("echo hello")
-                .output()
-                .expect("failed to execute process")
+        match submit[0] as char {
+            '0' => println!("Cookie error");
+            '1' => println!("Success."),
+            '2' => println!("The submit was too low."),
+            '3' => println!("The submit was too high."),
+            '4' => println!("Too fast retried, careful don't do it too often."),
+            _ => println!("Some error."),
+        }
     }
 }

@@ -3,7 +3,7 @@ mod aoc;
 
 fn main() {
     let lines = aoc::get_input_lines(String::from("input"));
-    println!("{:?}", aoc::submit().stdout);
+
     for line in lines {
         let mut computer = intcode::Computer::with_input(line, Vec::new());
         computer.intcode[1] = 12;
@@ -11,4 +11,6 @@ fn main() {
         computer.run().expect("Some error occured.");
         println!("Answer: {:?}", computer.intcode[0]);
     }
+
+    aoc::submit(1, 15);
 }
