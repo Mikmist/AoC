@@ -5,8 +5,7 @@ fn main() {
     let lines = aoc::get_input_lines(String::from("input"));
 
     for line in lines {
-        let mut computer = intcode::Computer::with_input(line, vec![1]);
-        println!("{:?}", computer.run());
-        println!("{:?}", computer.intcode[0]);
+        let mut computer = intcode::Computer::with_input(line, vec![5]);
+        println!("Output: {:?}", computer.run());
     }
 }
