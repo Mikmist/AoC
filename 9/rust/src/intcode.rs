@@ -1,20 +1,20 @@
 use std::collections::HashMap;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 enum Operation {
     End,
     Mult(i64, i64, usize),
     Add(i64, i64, usize),
     Input(usize),
     Output(i64),
-    Jit(i64, usize),
-    Jif(i64, usize),
+    Jit(i64, i64),
+    Jif(i64, i64),
     LessThan(i64, i64, usize),
     Equals(i64, i64, usize),
     AdjustRelative(i64)
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct Process {
     operation: Operation,
     step_size: usize,
@@ -56,7 +56,6 @@ impl Computer {
 
         loop {
             let process = self.parse_process()?;
-
             if process.operation == Operation::End {
                 break;
             }
@@ -74,6 +73,14 @@ impl Computer {
         match self.intcode.insert(index, value) {
             Some(_value) => (),
             None => (),
+        }
+    }
+
+    fn get_value(&self, index: usize) -> i64 {
+        if let Some(value) = self.intcode.get(&index) {
+            return *value;
+        } else {
+            return 0;
         }
     }
 
@@ -156,14 +163,14 @@ impl Computer {
             5 => Ok(Process {
                 operation: Operation::Jit(
                     self.parse_arg_value_from_mode(1),
-                    self.parse_pos_from_mode(2)
+                    self.parse_arg_value_from_mode(2)
                 ),
                 step_size: 3,
             }),
             6 => Ok(Process {
                 operation: Operation::Jif(
                     self.parse_arg_value_from_mode(1),
-                    self.parse_pos_from_mode(2)
+                    self.parse_arg_value_from_mode(2)
                 ),
                 step_size: 3,
             }),
@@ -207,11 +214,16 @@ impl Computer {
         }
 
         if mode == 1 {
-            return self.intcode[&(self.index+arg_number)];
+            return self.get_value(self.index+arg_number);
         } else if mode == 2 {
-            return self.intcode[&(self.intcode[&(self.relative_base + self.index + arg_number)] as usize)];
+            return self.get_value(
+                (
+                    self.relative_base as i64 +
+                    self.get_value(self.index + arg_number)
+                ) as usize
+            );
         } else {
-            return self.intcode[&(self.intcode[&(self.index+arg_number)] as usize)];
+            return self.get_value(self.get_value(self.index+arg_number) as usize);
         }
     }
 
@@ -227,9 +239,9 @@ impl Computer {
         if mode == 1 {
             return self.index+arg_number;
         } else if mode == 2 {
-            return self.intcode[&(self.relative_base + self.index + arg_number)] as usize;
+            return (self.relative_base as i64 + self.get_value(self.index + arg_number)) as usize;
         } else {
-            return self.intcode[&(self.index+arg_number)] as usize;
+            return self.get_value(self.index+arg_number) as usize;
         }
     }
 }
@@ -309,4 +321,7 @@ fn test_parse_in_out_immediate() {
     computer = Computer::with_input(String::from("3,3,1107,-1,8,3,4,3,99"), vec![7]);
     computer.run();
     assert_eq!(computer.output[0], 1);
+    computer = Computer::with_input(String::from("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99"), Vec::new());
+    computer.run();
+    assert_eq!(computer.output, vec![109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]);
 }
