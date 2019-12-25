@@ -70,14 +70,21 @@ impl Computer {
         Ok(self.output.to_vec())
     }
 
+    fn insert_value(&mut self, index: usize, value: i64) {
+        match self.intcode.insert(index, value) {
+            Some(_value) => (),
+            None => (),
+        }
+    }
+
     fn execute_instruction(&mut self, process: &Process) -> Option<usize> {
         let mut step_size: Option<usize> = None;
 
         match process.operation {
-            Operation::Mult(a, b, pos) => self .intcode.insert(pos, a * b),
-            Operation::Add(a, b, pos) => self.intcode.insert(pos, a + b),
+            Operation::Mult(a, b, pos) => self.insert_value(pos, a * b),
+            Operation::Add(a, b, pos) => self.insert_value(pos, a + b),
             Operation::Input(pos) =>  {
-                self.intcode.insert(pos, self.input[0]);
+                self.insert_value(pos, self.input[0]);
                 self.input.remove(0);
             },
             Operation::Output(pos) => self.output.push(pos as i64),
@@ -95,16 +102,16 @@ impl Computer {
             },
             Operation::LessThan(a, b, pos) => {
                 if a < b {
-                    self.intcode[&pos] = 1;
+                    self.insert_value(pos, 1);
                 } else {
-                    self.intcode[&pos] = 0;
+                    self.insert_value(pos, 0);
                 }
             },
             Operation::Equals(a, b, pos) => {
                 if a == b {
-                    self.intcode[&pos] = 1;
+                    self.insert_value(pos, 1);
                 } else {
-                    self.intcode[&pos] = 0;
+                    self.insert_value(pos, 0);
                 }
             },
             Operation::AdjustRelative(a) => self.relative_base = (self.relative_base as i64 + a) as usize,
@@ -227,7 +234,7 @@ impl Computer {
     }
 }
 
-fn checkHashToVec(hashmap: HashMap<usize,i64>, vec: Vec<i64>) -> bool {
+fn check_hash_to_vec(hashmap: HashMap<usize,i64>, vec: Vec<i64>) -> bool {
     for i in 0..vec.len() {
         if hashmap[&i] != vec[i] {
             return false;
@@ -239,7 +246,7 @@ fn checkHashToVec(hashmap: HashMap<usize,i64>, vec: Vec<i64>) -> bool {
 #[test]
 fn test_from_intcode() {
     let computer = Computer::with_input(String::from("1,0,0,0,99"), Vec::new());
-    assert!(checkHashToVec(computer.intcode, vec![1,0,0,0,99]));
+    assert!(crate::intcode::check_hash_to_vec(computer.intcode, vec![1,0,0,0,99]));
 }
 
 #[test]
@@ -252,21 +259,21 @@ fn test_run() {
 fn test_instruction_add() {
     let mut computer = Computer::with_input(String::from("1,0,0,0,99"), Vec::new());
     computer.run();
-    assert!(checkHashToVec(computer.intcode, vec![2,0,0,0,99]));
+    assert!(crate::intcode::check_hash_to_vec(computer.intcode, vec![2,0,0,0,99]));
 }
 
 #[test]
 fn test_instruction_mult() {
     let mut computer = Computer::with_input(String::from("2,3,0,3,99"), Vec::new());
     computer.run();
-    assert!(checkHashToVec(computer.intcode, vec![2,3,0,6,99]));
+    assert!(crate::intcode::check_hash_to_vec(computer.intcode, vec![2,3,0,6,99]));
 }
 
 #[test]
 fn test_instruction_case_1() {
     let mut computer = Computer::with_input(String::from("1,1,1,4,99,5,6,0,99"), Vec::new());
     computer.run();
-    assert!(checkHashToVec(computer.intcode, vec![30,1,1,4,2,5,6,0,99]));
+    assert!(crate::intcode::check_hash_to_vec(computer.intcode, vec![30,1,1,4,2,5,6,0,99]));
 }
 
 #[test]
@@ -274,12 +281,12 @@ fn test_instruction_input() {
     let input = 3;
     let mut computer = Computer::with_input(String::from("1101,2,1,4,99,0,99"), vec![input]);
     computer.run();
-    assert!(checkHashToVec(computer.intcode, vec![input,2,1,4,3,0,99]));
+    assert!(crate::intcode::check_hash_to_vec(computer.intcode, vec![input,2,1,4,3,0,99]));
 }
 
 #[test]
 fn test_parse_modes() {
-    let mut computer = Computer::with_input(String::from("01001,1,1,4,99,5,6,0,99"), Vec::new());
+    let computer = Computer::with_input(String::from("01001,1,1,4,99,5,6,0,99"), Vec::new());
     assert_eq!(computer.parse_arg_value_from_mode(1), 1);
     assert_eq!(computer.parse_arg_value_from_mode(2), 1);
 }
