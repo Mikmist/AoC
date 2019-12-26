@@ -14,6 +14,13 @@ enum Operation {
     AdjustRelative(i64)
 }
 
+#[derive(Clone, PartialEq)]
+pub enum Status {
+    Finished,
+    Waiting,
+    Running,
+}
+
 #[derive(Clone, Debug)]
 struct Process {
     operation: Operation,
@@ -23,6 +30,7 @@ struct Process {
 #[derive(Clone)]
 pub struct Computer {
     pub intcode: HashMap<usize,i64>,
+    pub status: Status,
     input: Vec<i64>,
     output: Vec<i64>,
     index: usize,
@@ -30,7 +38,7 @@ pub struct Computer {
 }
 
 impl Computer {
-    pub fn with_input_and_index(intcode_string: String, input: Vec<i64>, index: usize) -> Computer {
+    pub fn with_input_and_index(intcode_string: String, index: usize) -> Computer {
         let intcode_vec: Vec<i64> = intcode_string.split(",").map(|s| s.parse().unwrap()).collect();
         let mut intcode: HashMap<usize,i64> = HashMap::new();
 
@@ -40,23 +48,32 @@ impl Computer {
 
         Computer {
             intcode: intcode,
-            input: input,
+            input: Vec::new(),
             output: Vec::new(),
             index: index,
+            status: Status::Running,
             relative_base: 0,
         }
     }
 
-    pub fn with_input(intcode: String, input: Vec<i64>) -> Computer {
-        Computer::with_input_and_index(intcode, input, 0)
+    pub fn new(intcode: String) -> Computer {
+        Computer::with_input_and_index(intcode, 0)
     }
 
-    pub fn run(&mut self) -> Result<Vec<i64>, &'static str> {
+    pub fn run(&mut self, input: Vec<i64>) -> Result<Vec<i64>, &'static str> {
         self.output = Vec::new();
+        self.input = input;
 
         loop {
             let process = self.parse_process()?;
+
             if process.operation == Operation::End {
+                self.status = Status::Finished;
+                break;
+            }
+
+            if std::mem::discriminant(&process.operation) == std::mem::discriminant(&Operation::Input(1)) && self.input.len() < 1 {
+                self.status = Status::Waiting;
                 break;
             }
 
