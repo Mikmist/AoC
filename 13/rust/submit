@@ -1,4 +1,4 @@
-cookie=$(cat /home/zino/Documents/AoC/cookie.txt)
+cookie=$(cat ./../../cookie.txt)
 day="13"
 response=$(curl -d "level=$1&answer=$2" -X POST https://adventofcode.com/2019/day/$day/answer --cookie "session=$cookie" -s)
 
