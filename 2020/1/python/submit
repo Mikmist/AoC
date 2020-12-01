@@ -1,5 +1,5 @@
-cookie=$(cat replace_cookie)
-day="replace_day"
+cookie=$(cat ./../../cookie.txt)
+day="1"
 response=$(curl -d "level=$1&answer=$2" -X POST https://adventofcode.com/2020/day/$day/answer --cookie "session=$cookie" -s)
 
 signin="Error"

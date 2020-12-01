@@ -7,6 +7,7 @@ DEFAULT="\e[39m"
 init=0
 rust=0
 php=0
+python=0
 dir=$(pwd)
 cookiedir="$dir/cookie.txt"
 cookiedir="./../../cookie.txt"
@@ -38,7 +39,7 @@ function init {
       touch $1/input/input
 
       cookie=$(cat cookie.txt)
-      response=$(curl -s https://adventofcode.com/2019/day/$1/input --cookie "session=$cookie")
+      response=$(curl -s https://adventofcode.com/2020/day/$1/input --cookie "session=$cookie")
 
       signin="differ"
       if [[ $response =~ $signin ]]; then
@@ -68,10 +69,10 @@ function setRust {
    printf "[info]    Setting up rust env..."
    cd $1/
    output=$(cargo new rust -q)
-   cp ../scripts/submit ./rust/submit
-   cp ../scripts/aoc.rs ./rust/src/aoc.rs
+   cp ../../scripts/submit ./rust/submit
+   cp ../../scripts/aoc.rs ./rust/src/aoc.rs
    case $yn in
-      [Yy]* ) cp ../scripts/intcode.rs ./rust/src/intcode.rs;;
+      [Yy]* ) cp ../../scripts/intcode.rs ./rust/src/intcode.rs;;
    esac
    touch ./rust/.gitignore
    echo "target/" > ./rust/.gitignore
@@ -87,11 +88,25 @@ function setPHP {
    cd $1
    mkdir php
    touch php/$1.php
-   cp ../scripts/submit ./php/submit
+   cp ../../scripts/submit ./php/submit
    sed -i -e "s|replace_day|$1|g" ./php/submit
    sed -i -e "s|replace_cookie|$cookiedir|g" ./php/submit
    echo "require __DIR__ . submit.php;" > ./php/$1.php
    chmod +x php/$1.php
+   cd ..
+   printf "$SUCCESS done$DEFAULT\n"
+}
+
+# Setting up Python env
+function setPython {
+   printf "[info]    Setting up Python env..."
+   cd $1
+   mkdir python
+   touch python/main.py
+   cp ../../scripts/submit ./python/submit
+   sed -i -e "s|replace_day|$1|g" ./python/submit
+   sed -i -e "s|replace_cookie|$cookiedir|g" ./python/submit
+   chmod +x python/main.py
    cd ..
    printf "$SUCCESS done$DEFAULT\n"
 }
@@ -103,36 +118,29 @@ while test $# -gt 0; do
       echo " "
       echo "SYNOPSIS - setupday [options] day"
       echo "           Day needs to be a number"
-      echo "  "
+      echo ""
       echo "options:"
       echo " -h, --help                Show brief help"
       echo " -i, --init                Attempts the initialization"
-      echo " -p, --php                 The php language will be set up"
-      echo " -r, --rust                The rust language will be set up"
+      echo " -p, --php                 A PHP project will be set up"
+      echo " -r, --rust                A Rust project will be set up"
+      echo " -y, --python              A Python environment will be set up"
       exit 0
       ;;
-    -i)
+    -i|--init)
       init=1
 	  shift
       ;;
-    --init)
-      init=1
-	  shift
-      ;;
-    -p)
+    -p|--php)
       php=1
 	  shift
       ;;
-    --php)
-      php=1
-	  shift
-      ;;
-    -r)
+    --rust|-r)
       rust=1
 	  shift
       ;;
-    --rust)
-      rust=1
+    -y|--python)
+      python=1
 	  shift
       ;;
     *)
@@ -178,5 +186,13 @@ if [ $php -eq 1 ]; then
       printf "$WARNING[warning]$DEFAULT PHP project has already been created.\n"
    else
 	  setPHP $1
+   fi
+fi
+
+if [ $python -eq 1 ]; then
+   if [ -d "$1/python" ]; then
+      printf "$WARNING[warning]$DEFAULT Python project has already been created.\n"
+   else
+	  setPython $1
    fi
 fi
