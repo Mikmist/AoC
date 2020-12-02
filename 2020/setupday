@@ -102,7 +102,8 @@ function setPython {
    printf "[info]    Setting up Python env..."
    cd $1
    mkdir python
-   touch python/main.py
+   cp ../../scripts/utils.py ./rust/src/utils.py
+   cp ../../scripts/main.py ./rust/src/main.py
    cp ../../scripts/submit ./python/submit
    sed -i -e "s|replace_day|$1|g" ./python/submit
    sed -i -e "s|replace_cookie|$cookiedir|g" ./python/submit
