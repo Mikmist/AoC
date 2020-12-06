@@ -66,7 +66,7 @@ function init {
 # Setting up Rust env using Cargo
 function setRust {
    read -p "[info]    Is that day an intcode problem? [y/N] " yn
-   printf "[info]    Setting up rust env..."
+   printf "[info]    Setting up Rust env..."
    cd $1/
    output=$(cargo new rust -q)
    cp ../../scripts/submit ./rust/submit
@@ -84,7 +84,7 @@ function setRust {
 
 # Setting up PHP env
 function setPHP {
-   printf "[info]    Setting up php env..."
+   printf "[info]    Setting up PHP env..."
    cd $1
    mkdir php
    touch php/$1.php
@@ -102,12 +102,11 @@ function setPython {
    printf "[info]    Setting up Python env..."
    cd $1
    mkdir python
-   cp ../../scripts/utils.py ./rust/src/utils.py
-   cp ../../scripts/main.py ./rust/src/main.py
+   cp ../../scripts/utils.py ./python/utils.py
+   cp ../../scripts/main.py ./python/main.py
    cp ../../scripts/submit ./python/submit
    sed -i -e "s|replace_day|$1|g" ./python/submit
    sed -i -e "s|replace_cookie|$cookiedir|g" ./python/submit
-   chmod +x python/main.py
    cd ..
    printf "$SUCCESS done$DEFAULT\n"
 }
