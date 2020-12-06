@@ -121,7 +121,7 @@ while test $# -gt 0; do
       echo ""
       echo "options:"
       echo " -h, --help                Show brief help"
-      echo " -i, --init                Attempts the initialization"
+      echo " -i, --init                Attempts the initialization of the given day"
       echo " -p, --php                 A PHP project will be set up"
       echo " -r, --rust                A Rust project will be set up"
       echo " -y, --python              A Python environment will be set up"
