@@ -149,6 +149,7 @@ while test $# -gt 0; do
   esac
 done
 
+day=$(seq -f "%02g" $1 $1)
 re='^[0-9]+$'
 if [ $init -eq 1 ]; then
    if [ ! -f "cookie.txt" ]; then
@@ -158,41 +159,41 @@ if [ $init -eq 1 ]; then
       exit 0
    fi
 
-   if ! [[ -n $1 ]] ; then
+   if ! [[ -n $day ]] ; then
       printf "$ERROR[error]  $DEFAULT No day given.\n" >&2; exit 1
    fi
-   if ! [[ $1 =~ $re ]] ; then
+   if ! [[ $day =~ $re ]] ; then
       printf "$ERROR[error]  $DEFAULT The day given was not a number. See -h or --help for more." >&2; exit 1
    fi
 
-   init $1
+   init $day
 fi
 
-continue=$(checkInitStatus $1)
+continue=$(checkInitStatus $day)
 if [ $continue -ne 1 ]; then
    exit 1
 fi
 
 if [ $rust -eq 1 ]; then
-   if [ -d "$1/rust" ]; then
+   if [ -d "$day/rust" ]; then
       printf "$WARNING[warning]$DEFAULT Rust project has already been created.\n"
    else
-	  setRust $1
+	  setRust $day
    fi
 fi
 
 if [ $php -eq 1 ]; then
-   if [ -d "$1/php" ]; then
+   if [ -d "$day/php" ]; then
       printf "$WARNING[warning]$DEFAULT PHP project has already been created.\n"
    else
-	  setPHP $1
+	  setPHP $day
    fi
 fi
 
 if [ $python -eq 1 ]; then
-   if [ -d "$1/python" ]; then
+   if [ -d "$day/python" ]; then
       printf "$WARNING[warning]$DEFAULT Python project has already been created.\n"
    else
-	  setPython $1
+	  setPython $day
    fi
 fi
