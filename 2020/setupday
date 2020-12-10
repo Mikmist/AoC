@@ -48,7 +48,7 @@ function init {
          rm -rf $1
          return
       fi
-      echo $response > $1/input/input
+      echo "$response" > $1/input/input
       printf "$SUCCESS done$DEFAULT\n"
    elif [ $status -eq 1 ]; then
       printf "$WARNING[warning]$DEFAULT Has already been initialized.\n"
