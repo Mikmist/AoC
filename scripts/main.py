@@ -1,4 +1,3 @@
-from utils import submit
-
 with open('../input/input') as data:
-    print(data.read())
+    for line in data:
+        print(line)
