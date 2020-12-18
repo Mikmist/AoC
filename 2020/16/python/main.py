@@ -50,7 +50,6 @@ with open('../input/input') as data:
         count = len(line.strip().split(','))
     possibities = [[i for i in range(count)] for j in range(count)]
 
-
     # Other tickets loop
     errors = 0
     for line in data:
