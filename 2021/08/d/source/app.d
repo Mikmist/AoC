@@ -1,4 +1,5 @@
-import std.stdio, std.array, std.string, std.conv, std.algorithm.mutation, std.algorithm.searching, std.algorithm.comparison;
+import std.stdio, std.array, std.string, std.conv, std.algorithm.mutation;
+import std.algorithm.searching, std.algorithm.comparison;
 import util : submit;
 
 auto hasAllLetters(string has, string needs) {
