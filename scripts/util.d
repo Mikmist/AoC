@@ -1,7 +1,7 @@
-int submit(int day, int answer) {
+int submit(int part, int answer) {
    	import std.process : execute;
     import std.conv;
-	auto dmd = execute(["./submit", to!string(day), to!string(answer)]);
+	auto dmd = execute(["./submit", to!string(part), to!string(answer)]);
    	return dmd.status;
 }
 
