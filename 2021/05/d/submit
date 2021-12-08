@@ -1,6 +1,6 @@
-cookie=$(cat replace_cookie)
-day="replace_day"
-response=$(curl -d "level=$1&answer=$2" -X POST https://adventofcode.com/2021/day/$day/answer --cookie "session=$cookie" -s)
+cookie=$(cat ./../../cookie.txt)
+day="05"
+response=$(curl -d "level=$1&answer=$2" -X POST https://adventofcode.com/2020/day/$day/answer --cookie "session=$cookie" -s)
 
 signin="Error"
 # This means the cookie was either not any good.
