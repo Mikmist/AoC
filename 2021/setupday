@@ -143,6 +143,7 @@ while test $# -gt 0; do
       echo " -p, --php                 A PHP project will be set up"
       echo " -r, --rust                A Rust project will be set up"
       echo " -y, --python              A Python environment will be set up"
+      echo " -d, --dlang               A D Language environment will be set up"
       exit 0
       ;;
     -i|--init)
