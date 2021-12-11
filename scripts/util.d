@@ -27,3 +27,47 @@ void runAnswers(
 		writeln(" - Real: ", partB(file));
 	}
 }
+
+struct IntMap2D
+{
+	int[][] map;
+	
+	/** 
+	* Returns the value at given coordinates, will return -1 if invalid coordinates.
+	*/
+	auto getValueAt(int x, int y) {
+		if (x < 0 ||  y < 0 || y > (map.length) - 1 || x > (map[y].length) - 1) {
+			return -1;
+		}
+		return map[y][x];
+	}
+
+	/** 
+	* Returns the value at given coordinates, will not check if the coord exists.
+	*/
+	void setValueAt(int x, int y, int val) {
+		map[y][x] = val;
+	}
+
+	this(File file) {
+		map = [];
+		foreach (line; file.byLine)
+		{
+			int[] currentRow = [];
+			foreach (value; line)
+			currentRow ~= to!int(to!string(value));
+			map ~= currentRow;
+		}
+	}
+
+	void print() {
+		for (int y = 0; y < map.length; y++) {
+			for(int x = 0; x < map[y].length; x++)
+			{
+			write(map.getValueAt(x, y), " ");
+			}
+			writeln();
+		}
+		writeln();
+	}
+}
