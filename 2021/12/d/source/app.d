@@ -53,20 +53,19 @@ int explorePathsA(Map* map, string current, string[] visited) {
   }
   return total;
 }
-int count = 0;
+
 int explorePathsB(Map* map, string current, int[string] visited, bool smallDoublePassed = false) {
   if (current == "end") {
-    writeln(visited, " x");
-    count++;
     return 1;
   }
 
   if (
     ("start" in visited && current == "start") ||
-    (current in visited && visited[current] > 1 && smallDoublePassed)
+    (toUpper(current) != current && current in visited && visited[current] == 1 && smallDoublePassed)
   ) {
     return 0;
   }
+
   if (current in visited) {
     visited[current] += 1;
     if (visited[current] > 1 && toUpper(current) != current) smallDoublePassed = true;
@@ -112,7 +111,7 @@ int partB(File file) {
 
 void main() {
   // Use these variables to decide what the runner needs to run.
-	bool runReal = false;
+	bool runReal = true;
 	bool runB = true;
 
   runAnswers(&partA, &partB, runReal, runB);
