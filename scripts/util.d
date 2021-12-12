@@ -1,4 +1,4 @@
-import std.typecons, std.stdio;
+import std.typecons, std.stdio, std.conv;
 
 int submit(int part, int answer) {
    	import std.process : execute;
@@ -64,7 +64,7 @@ struct IntMap2D
 		for (int y = 0; y < map.length; y++) {
 			for(int x = 0; x < map[y].length; x++)
 			{
-			write(map.getValueAt(x, y), " ");
+			write(getValueAt(x, y), " ");
 			}
 			writeln();
 		}
