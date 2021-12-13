@@ -36,7 +36,6 @@ with open('../input/input') as data:
         if order['axis'] == 'y':
             for y in range(maxY//2 + 1):
                 for x in range(maxX):
-                    # print(x, y)
                     if foldingMap[order['index'] - y][x] == '#':
                         continue
                     if foldingMap[order['index'] + y][x] == '#':
