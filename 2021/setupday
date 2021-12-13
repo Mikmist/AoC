@@ -40,7 +40,7 @@ function init {
       touch $1/input/input
 
       cookie=$(cat cookie.txt)
-      response=$(curl -s https://adventofcode.com/2021/day/$1/input --cookie "session=$cookie")
+      response=$(curl -s https://adventofcode.com/2021/day/$2/input --cookie "session=$cookie")
 
       signin="differ"
       if [[ $response =~ $signin ]]; then
@@ -50,17 +50,23 @@ function init {
          return
       fi
       echo "$response" > $1/input/input
+      echo "" > $1/input/test
+      vim $1/input/test
       printf "$SUCCESS done$DEFAULT\n"
    elif [ $status -eq 1 ]; then
       printf "$WARNING[warning]$DEFAULT Has already been initialized.\n"
    elif [ $status -eq -1 ]; then
       printf "$ERROR[error]  $DEFAULT $1 is a file, delete it if you want to use it as a AoC day.\n"
-	  rust=0
-	  php=0
+	   rust=0
+	   php=0
+      dlang=0
+      python=0
    elif [ $status -eq 2 ]; then
       printf "$ERROR[error]  $DEFAULT Was not initialized by this program, stopping.\n"
-	  rust=0
-	  php=0
+	   rust=0
+	   php=0
+      dlang=0
+      python=0
    fi
 }
 
@@ -189,7 +195,7 @@ if [ $init -eq 1 ]; then
       printf "$ERROR[error]  $DEFAULT The day given was not a number. See -h or --help for more." >&2; exit 1
    fi
 
-   init $day
+   init $day $1
 fi
 
 continue=$(checkInitStatus $day)
