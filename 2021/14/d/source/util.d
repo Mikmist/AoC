@@ -8,8 +8,8 @@ int submit(int part, int answer) {
 }
 
 void runAnswers(
-	int function(File) partA,
-	int function(File) partB,
+	long function(File) partA,
+	long function(File) partB,
 	bool runReal = false,
 	bool b = false
 ) {
@@ -22,7 +22,7 @@ void runAnswers(
 	if (b) {
 		writeln("\nPart B");
 		file = File("../input/test");
-		 writeln(" - Test: ", partB(file));
+		writeln(" - Test: ", partB(file));
 		file = File("../input/input");
 		if (runReal) writeln(" - Real: ", partB(file));
 	}
