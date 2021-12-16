@@ -7,7 +7,7 @@ import util;
  *   file = Todays input files.
  * Returns: The answer to the given file.
  */
-auto partA(File file) {
+long partA(File file) {
   // Call Part A code here.
   foreach (line; file.byLine)
   {
@@ -22,7 +22,7 @@ auto partA(File file) {
  *   file = Todays input files.
  * Returns: The answer to the given file.
  */
-auto partB(File file) {
+long partB(File file) {
   // Call Part B code here.
   foreach (line; file.byLine)
   {
