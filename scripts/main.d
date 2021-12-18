@@ -4,7 +4,7 @@ import util;
 /** 
  * 
  * Params:
- *   file = Todays input files.
+ *   file = Todays input file.
  * Returns: The answer to the given file.
  */
 long partA(File file) {
@@ -19,7 +19,7 @@ long partA(File file) {
 /** 
  * 
  * Params:
- *   file = Todays input files.
+ *   file = Todays input file.
  * Returns: The answer to the given file.
  */
 long partB(File file) {
