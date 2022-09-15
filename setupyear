@@ -1,0 +1,43 @@
+# Colours
+WARNING="\e[33m"
+SUCCESS="\e[32m"
+ERROR="\e[31m"
+DEFAULT="\e[39m"
+
+function checkInitStatus {
+   if [ -d $1 ]; then
+      if [ -f "$1/.init" ]; then
+		 echo 1
+      else
+	     echo 2
+	  fi
+   else
+      if [ -f $1 ]; then
+         echo -1
+      else
+         echo 0
+      fi
+   fi
+}
+
+function setupYear {
+   status=$(checkInitStatus $1)
+   if [ $status -eq 0 ]; then
+        printf "[info]    Attempting init of year $1"
+        mkdir $1
+        touch $1/.init
+        cp ./scripts/setupday ./$1/setupday
+        sed -i -e "s|replace_year|$1|g" ./$1/setupday
+        
+        echo "####init_done####" > $1/.init
+        printf "$SUCCESS done$DEFAULT\n"
+    elif [ $status -eq 1 ]; then
+        printf "$WARNING[warning]$DEFAULT Has already been initialized.\n"
+    elif [ $status -eq -1 ]; then
+        printf "$ERROR[error]  $DEFAULT $1 is a file, delete it if you want to use it as a AoC year.\n"
+    elif [ $status -eq 2 ]; then
+        printf "$ERROR[error]  $DEFAULT Was not initialized by this program, stopping.\n"
+    fi
+}
+
+setupYear $?
