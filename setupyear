@@ -21,6 +21,17 @@ function checkInitStatus {
 }
 
 function setupYear {
+    re='^[0-9]{4}$'
+    if ! [[ $yournumber =~ $re ]] ; then
+        echo "$ERROR[error]   Given input is not a year and certainly not in this in the current century." >&2; exit 1
+    fi 
+    date=`date +"%Y"`
+    if [ $1 < 2015 ]; then
+        printf "$ERROR[error]  Cannot initialize a year smaller than 2015\n"
+    elif [ $1 > date ]; then
+        printf "$ERROR[error]  Cannot initialize a year larger than $date\n"
+    fi
+
    status=$(checkInitStatus $1)
    if [ $status -eq 0 ]; then
         printf "[info]    Attempting init of year $1"
