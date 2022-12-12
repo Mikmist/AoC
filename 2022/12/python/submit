@@ -1,0 +1,33 @@
+cookie=$(cat ./../../cookie.txt)
+day="12"
+response=$(curl -d "level=$1&answer=$2" -X POST https://adventofcode.com/2021/day/$day/answer --cookie "session=$cookie" -s)
+
+signin="Error"
+# This means the cookie was either not any good.
+if [[ $response =~ $signin ]]; then
+  echo "0"
+fi
+
+success="star"
+# This means the submit successful.
+if [[ $response =~ $success ]]; then
+  echo "1"
+fi
+
+low="low"
+# This means the submit was too low.
+if [[ $response =~ $low ]]; then
+  echo "2"
+fi
+
+high="high"
+# This means the submit was too high.
+if [[ $response =~ $high ]]; then
+  echo "3"
+fi
+
+wait="wait"
+# This means the submit was too fast after a recent try.
+if [[ $response =~ $wait ]]; then
+  echo "4"
+fi
