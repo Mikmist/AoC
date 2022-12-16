@@ -41,23 +41,21 @@ def explore_valves(map, direct_lines):
         a = q.get()
         visisted, name, current_rate, minutes = a.item
         pressure_released = a.priority
-        val = min(val, pressure_released-(current_rate*(29-minutes)))
         if minutes >= 30:
             continue
-        #print(visisted, name, current_rate, minutes, pressure_released)
-        #print(name, visisted, minutes, current_rate)
+        val = min(val, pressure_released-(current_rate*(30-minutes)))
+        print(name, visisted, minutes, current_rate)
         for i in direct_lines[name]:
             distance = direct_lines[name][i]
             cv = copy.deepcopy(visisted)
             cv.add(i)
-            r = current_rate
-            cpr = (r*(distance+1))
+            cpr = current_rate*(distance+1)
             if i not in visisted:
                 q.put(PItem(pressure_released - cpr, (cv, i, current_rate+map[i].rate, minutes+distance+1)))
     print(val)
 
 
-with open('../input/input') as data:
+with open('../input/test') as data:
     map = {}
     direct_lines = {}
     for line in data:
