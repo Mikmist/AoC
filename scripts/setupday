@@ -9,6 +9,7 @@ rust=0
 php=0
 dlang=0
 python=0
+cpp=0
 dir=$(pwd)
 cookiedir="$dir/cookie.txt"
 cookiedir="./../../cookie.txt"
@@ -61,12 +62,14 @@ function init {
 	   php=0
       dlang=0
       python=0
+      cpp=0
    elif [ $status -eq 2 ]; then
       printf "$ERROR[error]  $DEFAULT Was not initialized by this program, stopping.\n"
 	   rust=0
 	   php=0
       dlang=0
       python=0
+      cpp=0
    fi
 }
 
@@ -131,6 +134,17 @@ function setDLang {
    cp ../../scripts/submit ./d/submit
    sed -i -e "s|replace_day|$1|g" ./d/submit
    sed -i -e "s|replace_cookie|$cookiedir|g" ./d/submit
+   cd ..
+   printf "$SUCCESS done$DEFAULT\n"
+}
+
+# Setting up CPP env
+function setCPP {
+   printf "[info]    Setting up C++ env..."
+   cd $1
+   mkdir c++
+   cp ../../scripts/c++/CMakeLists.txt ./c++/CMakeLists.txt
+   cp ../../scripts/c++/main.cpp ./c++/main.cpp
    cd ..
    printf "$SUCCESS done$DEFAULT\n"
 }
