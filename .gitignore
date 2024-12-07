@@ -1,3 +1,4 @@
 *.txt
 **/*.lock
 **/.DS_Store
+**/input/input
