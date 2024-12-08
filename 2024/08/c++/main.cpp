@@ -15,7 +15,6 @@
 int getAnswer(Map& map, std::unordered_map<char, std::vector<Coordinate>> coordinates, bool partB) {
     std::unordered_set<Coordinate> nodes;
     int count = 0;
-    int countT = 0;
     for (const auto &it : coordinates) {
         bool inLine = it.second.size() > 2 && partB;
         for (const auto &coord : it.second) {
@@ -41,7 +40,6 @@ int getAnswer(Map& map, std::unordered_map<char, std::vector<Coordinate>> coordi
             }
         }
     }
-    map.print();
     for (int i = 0; i < map.height; i++) {
         for (int j = 0; j < map.width; j++) {
             if (map.get(j, i) == '#') {
