@@ -12,7 +12,6 @@ int dfs(Map& map, std::unordered_set<Coordinate>& coordinates, const int x, cons
     if (cur == -2 || cur != last+1) {
         return 0;
     }
-    std::cout << "cur: " << cur << " at (" << x << "," << y << "), " << last << std::endl;
     if (cur == 9 && last == 8) {
         coordinates.insert({x, y});
         return 1;
@@ -41,7 +40,6 @@ int main() {
 
     Map map(lines);
     std::unordered_map<char, std::vector<Coordinate>> coordinates;
-    map.print();
 
     std::cout << "Part A: " << getAnswer(map, false) << std::endl;
     std::cout << "Part B: " << getAnswer(map, true) << std::endl;
