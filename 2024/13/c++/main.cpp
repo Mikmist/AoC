@@ -15,7 +15,7 @@ int solution(uint64_t aX, uint64_t aY, uint64_t bX, uint64_t bY, uint64_t prizeX
     return solution == 1000000000 ? 0 : solution;
 }
 
-auto cost(int64_t a, int64_t c, int64_t b, int64_t d, int64_t e, int64_t f) -> uint64_t {
+auto partB(int64_t a, int64_t c, int64_t b, int64_t d, int64_t e, int64_t f) -> uint64_t {
     // dn = (a • d) - (c • b)
     // x = [(e • d) - (f • b)] ÷ dn
     // y = [(a • f) - (c • e)] ÷ dn
@@ -37,7 +37,7 @@ uint64_t getAnswer(const std::vector<std::string> &lines, bool partB) {
         sscanf(lines[i++].c_str(), "Button A: X+%d, Y+%d", &aX, &aY);
         sscanf(lines[i++].c_str(), "Button B: X+%d, Y+%d", &bX, &bY);
         sscanf(lines[i++].c_str(), "Prize: X=%d, Y=%d", &prizeX, &prizeY);
-        if (partB) sum += cost(aX, aY, bX, bY, prizeX, prizeY);
+        if (partB) sum += partB(aX, aY, bX, bY, prizeX, prizeY);
         else sum += solution(aX, aY, bX, bY, prizeX, prizeY);
     }
     return sum;
