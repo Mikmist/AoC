@@ -6,8 +6,6 @@
 #include "map.h"
 #include "utils.h"
 
-const std::vector<std::pair<int, int>> dirTransforms = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-
 int getAnswer(Map& map) {
     auto reindeer = map.find('S').value();
     using PrioDirectionalCoordinate = std::pair<int, DirectionalCoordinate>;
@@ -34,6 +32,7 @@ int getAnswer(Map& map) {
             }
         }
     }
+    return 0;
 }
 
 void getAnswerB(Map& map, Map& mapB, const int max) {
