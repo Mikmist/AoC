@@ -7,6 +7,8 @@
 #include <vector>
 #include <iostream>
 
+const std::vector<std::pair<int, int>> dirTransforms = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+
 class DirectionalCoordinate {
     public:
     int x;
