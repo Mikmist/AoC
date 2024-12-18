@@ -12,7 +12,7 @@ Computer::Computer(std::vector<std::string>& lines) {
     sscanf(lines[0].c_str(), "Register A: %d", &A);
     sscanf(lines[1].c_str(), "Register B: %d", &B);
     sscanf(lines[2].c_str(), "Register C: %d", &C);
-    for (int j = 9; j < lines[4].size(); j++) {
+    for (uint64_t j = 9; j < lines[4].size(); j++) {
         char cur = lines[4][j];
         if (lines[4][j] == ',') continue;
         this->program.push_back(cur - '0');
@@ -20,7 +20,7 @@ Computer::Computer(std::vector<std::string>& lines) {
     this->instructionPointer = 0;
 }
 
-Computer::Computer(int instructionPointer, std::vector<int> program, int A, int B, int C) {
+Computer::Computer(uint64_t instructionPointer, std::vector<uint64_t> program, uint64_t A, uint64_t B, uint64_t C) {
     this->instructionPointer = instructionPointer;
     this->program = program;
     this->A = A;
@@ -28,12 +28,12 @@ Computer::Computer(int instructionPointer, std::vector<int> program, int A, int 
     this->C = C;
 }
 
-Computer::Computer(std::vector<int> program, int A, int B, int C) : Computer(0, std::move(program), A, B, C) {}
+Computer::Computer(std::vector<uint64_t> program, uint64_t A, uint64_t B, uint64_t C) : Computer(0, std::move(program), A, B, C) {}
 
 void Computer::run() {
     for (; instructionPointer < program.size(); ) {
-        int opcode = program[instructionPointer];
-        int comboOperand = program[instructionPointer+1];
+        uint64_t opcode = program[instructionPointer];
+        uint64_t comboOperand = program[instructionPointer+1];
         // std::cout << opcode << " " << comboOperand << std::endl;
         // printf("Registers (A:%d B:%d C:%d)\n", A, B, C);
         switch (opcode) {
@@ -56,26 +56,26 @@ void Computer::run() {
     }
 }
 
-void Computer::adv(int comboOperand) { division(A, getComboOperandValue(comboOperand), A); }
-void Computer::bdv(int comboOperand) { division(A, getComboOperandValue(comboOperand), B); }
-void Computer::cdv(int comboOperand) { division(A, getComboOperandValue(comboOperand), C); }
-void Computer::bxl(int comboOperand) { B ^= comboOperand; }
-void Computer::bst(int comboOperand) { B = (getComboOperandValue(comboOperand) % 8); }
+void Computer::adv(uint64_t comboOperand) { division(A, getComboOperandValue(comboOperand), A); }
+void Computer::bdv(uint64_t comboOperand) { division(A, getComboOperandValue(comboOperand), B); }
+void Computer::cdv(uint64_t comboOperand) { division(A, getComboOperandValue(comboOperand), C); }
+void Computer::bxl(uint64_t comboOperand) { B ^= comboOperand; }
+void Computer::bst(uint64_t comboOperand) { B = (getComboOperandValue(comboOperand) % 8); }
 void Computer::bxc() {
     // printf("B = %d ^ %d = %d\n", B, C, B^C);
     B = B ^ C;
 }
-void Computer::out(int comboOperand) {
+void Computer::out(uint64_t comboOperand) {
     // printf("out: (%d) %dmod8=%d\n", comboOperand, getComboOperandValue(comboOperand), getComboOperandValue(comboOperand)%8);
     output.push_back(getComboOperandValue(comboOperand)%8);
 }
 
-void Computer::division(const int inRegister, const int comboOperand, int &outRegister) {
+void Computer::division(const uint64_t inRegister, const uint64_t comboOperand, uint64_t &outRegister) {
     outRegister = inRegister/std::pow(2,comboOperand);
     // printf("division: %d/2^%d=%d\n", inRegister, comboOperand, outRegister);
 }
 
-int Computer::getComboOperandValue(const int comboOperand) const {
+uint64_t Computer::getComboOperandValue(const uint64_t comboOperand) const {
     if (comboOperand == 7) exit(1);
     if (comboOperand == 6) return C;
     if (comboOperand == 5) return B;
@@ -83,7 +83,7 @@ int Computer::getComboOperandValue(const int comboOperand) const {
     return comboOperand;
 }
 
-bool Computer::jnz(int comboOperand) {
+bool Computer::jnz(uint64_t comboOperand) {
     if (A != 0) {
         instructionPointer = comboOperand % 8;
         return true;
@@ -93,7 +93,7 @@ bool Computer::jnz(int comboOperand) {
 
 std::string Computer::getFormattedOutput() const {
     std::string output;
-    for (int i = 0; i < this->output.size(); i++) {
+    for (uint64_t i = 0; i < this->output.size(); i++) {
         if (i!=0) output += ",";
         output += std::to_string(this->output[i]);
     }

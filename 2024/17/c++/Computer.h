@@ -10,30 +10,30 @@
 class Computer {
 public:
     explicit Computer(std::vector<std::string>& lines);
-    Computer(int instructionPointer, std::vector<int> program, int A, int B, int C);
-    Computer(std::vector<int> program, int A, int B, int C);
+    Computer(uint64_t instructionPointer, std::vector<uint64_t> program, uint64_t A, uint64_t B, uint64_t C);
+    Computer(std::vector<uint64_t> program, uint64_t A, uint64_t B, uint64_t C);
 
     int instructionPointer;
-    std::vector<int> program;
-    std::vector<int> output;
-    int A;
-    int B;
-    int C;
+    std::vector<uint64_t> program;
+    std::vector<uint64_t> output;
+    uint64_t A;
+    uint64_t B;
+    uint64_t C;
 
     void run();
     std::string getFormattedOutput() const;
 private:
-    void adv(int comboOperand);
-    void bxl(int comboOperand);
-    void bst(int comboOperand);
-    bool jnz(int comboOperand);
+    void adv(uint64_t comboOperand);
+    void bxl(uint64_t comboOperand);
+    void bst(uint64_t comboOperand);
+    bool jnz(uint64_t comboOperand);
     void bxc();
-    void out(int comboOperand);
-    void bdv(int comboOperand);
-    void cdv(int comboOperand);
+    void out(uint64_t comboOperand);
+    void bdv(uint64_t comboOperand);
+    void cdv(uint64_t comboOperand);
 
-    int getComboOperandValue(int comboOperand) const;
-    void division(int inRegister, int comboOperand, int& outRegister);
+    uint64_t getComboOperandValue(uint64_t comboOperand) const;
+    void division(uint64_t inRegister, uint64_t comboOperand, uint64_t& outRegister);
 };
 
 void tests();
