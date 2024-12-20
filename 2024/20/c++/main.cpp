@@ -79,26 +79,26 @@ int main() {
     const Triple normal = getAnswer(map, start, end).value();
 
     // Old disfunctional part A
-    for (int i = 1; i < map.height-1; i++) {
-        printProgressBar(i, map.height);
-        for (int j = 1; j < map.width-1; j++) {
-            std::optional<Triple> max;
-            const auto m = map.get(j, i);
-            map.set(j, i, 'C');
-            if (m == '#') {
-                max = getAnswer(map, start, end);
-                if (max.has_value()) {
-                    int m = max.value().pathLength;
-                    if (normal.pathLength-m >= 50) {
-                        std::string string_rep = max.value().startOfCheat.value().to_string() + '-' + max.value().endOfCheat.value().to_string();
-                        if (!maxes.contains(string_rep)) maxes[string_rep] = 1;
-                        else maxes[string_rep]++;
-                    }
-                }
-            }
-            map.set(j, i, m);
-        }
-    }
+    // for (int i = 1; i < map.height-1; i++) {
+    //     printProgressBar(i, map.height);
+    //     for (int j = 1; j < map.width-1; j++) {
+    //         std::optional<Triple> max;
+    //         const auto m = map.get(j, i);
+    //         map.set(j, i, 'C');
+    //         if (m == '#') {
+    //             max = getAnswer(map, start, end);
+    //             if (max.has_value()) {
+    //                 int m = max.value().pathLength;
+    //                 if (normal.pathLength-m >= 50) {
+    //                     std::string string_rep = max.value().startOfCheat.value().to_string() + '-' + max.value().endOfCheat.value().to_string();
+    //                     if (!maxes.contains(string_rep)) maxes[string_rep] = 1;
+    //                     else maxes[string_rep]++;
+    //                 }
+    //             }
+    //         }
+    //         map.set(j, i, m);
+    //     }
+    // }
 
     // Part B
     int countA = 0, countB = 0;
